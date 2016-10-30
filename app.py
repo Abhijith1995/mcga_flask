@@ -25,6 +25,7 @@ state_coll = db.state
 goal_coll = db.goals
 
 # HELPERS
+
 def log(message):
 	print(str(message))
 	sys.stdout.flush()
@@ -67,7 +68,7 @@ def verify():
 			return "Verification token mismatch", 403
 		return request.args["hub.challenge"], 200
 
-	return "Hello world", 200
+	return "Hello Abhijith", 200
 
 
 @app.route("/", methods=["POST"])
