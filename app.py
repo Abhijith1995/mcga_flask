@@ -13,7 +13,7 @@ import psycopg2
 
 app = Flask(__name__)
 
-MONGO_URI = "mongodb://foo:bar<d@ds029496.mlab.com:29496/budget"
+MONGO_URI = "mongodb://{0}:{1}<d@ds029496.mlab.com:29496/budget".format(os.environ["DB_USERNAME"], os.environ["DB_PASSWORD"])
 # mongo client instantiation
 client = MongoClient(MONGO_URI)
 db = client.budget
