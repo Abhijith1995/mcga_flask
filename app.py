@@ -25,6 +25,7 @@ goal_coll = db.goals
 
 # HELPERS
 
+
 def log(message):
 	print(str(message))
 	sys.stdout.flush()
@@ -42,14 +43,11 @@ def send_message(recipient_id, message_data):
 	}
 
 	data = json.dumps({
-		"recipient": {
-            "id": recipient_id
-        },
-        "message": message_data
+		"recipient": {"id": recipient_id},
+		"message": message_data
 	})
 
-	r = requests.post("https://graph.facebook.com/v2.6/me/messages",
-					  params=params, headers=headers, data=data)
+	r = requests.post("https://graph.facebook.com/v2.6/me/messages", params=params, headers=headers, data=data)
 
 	if r.status_code != 200:
 		log(r.status_code)
@@ -97,9 +95,12 @@ def webhook():
 	# we store title in the database
 	subcategory_map = {}
 
-	subcategory_dicts = [home_expense_categories, living_expense_categories,
-						 transportation_expense_categories,
-						 personal_expense_categories]
+	subcategory_dicts = [
+		home_expense_categories,
+		living_expense_categories,
+		transportation_expense_categories,
+		personal_expense_categories
+	]
 
 	subcategory_dicts = map(lambda x: x["attachment"]["payload"]["elements"], subcategory_dicts)
 
@@ -278,10 +279,10 @@ def webhook():
 							# create goal record in mongo database
 							goal_coll.insert({
 								"user_id": sender_id, "goal_title": None,
-							 	"goal_desc": None, "goal_amount": None,
-							 	"is_achieved": False,
-							 	"contribution_amount": 0.0
-							 })
+								"goal_desc": None, "goal_amount": None,
+								"is_achieved": False,
+								"contribution_amount": 0.0
+							})
 
 						# onboard user
 						if not state_map["goal_title"]["is_message_sent"]:
@@ -296,7 +297,7 @@ def webhook():
 						elif goal_coll.find_one({"user_id": sender_id})["goal_title"] is None:
 							goal_coll.update({"user_id": sender_id}, {
 								"$set": {
-									"goal_title" : message_text
+									"goal_title": message_text
 								}
 							}, upsert=False)
 
@@ -312,10 +313,9 @@ def webhook():
 						elif goal_coll.find_one({"user_id": sender_id})["goal_desc"] is None:
 							goal_coll.update({"user_id": sender_id}, {
 								"$set": {
-									"goal_desc" : message_text
+									"goal_desc": message_text
 								}
 							}, upsert=False)
-
 
 						if not state_map["goal_amount"]["is_message_sent"]:
 							send_message(sender_id, onboarding_goal_amount)
@@ -328,7 +328,7 @@ def webhook():
 						elif goal_coll.find_one({"user_id": sender_id})["goal_amount"] is None:
 							goal_coll.update({"user_id": sender_id}, {
 								"$set": {
-									"goal_amount" : float(message_text)
+									"goal_amount": float(message_text)
 								}
 							}, upsert=False)
 							# future work: ask for confirmation
@@ -344,7 +344,7 @@ def webhook():
 						elif user_coll.find_one({"user_id": sender_id})["current_balance"] is None:
 							user_coll.update({"user_id": sender_id}, {
 								"$set": {
-									"current_balance" : float(message_text)
+									"current_balance": float(message_text)
 								}
 							}, upsert=False)
 
@@ -356,7 +356,7 @@ def webhook():
 							# update the user record to complete onboarding
 							user_coll.update({"user_id": sender_id}, {
 								"$set": {
-									"is_onboarded" : True
+									"is_onboarded": True
 								}
 							}, upsert=False)
 
@@ -364,7 +364,6 @@ def webhook():
 							send_message(sender_id, main_quick_reply)
 
 						continue
-
 
 					if state_map["expense"]["flow_instantiated"]:
 						# presumably last stage of expense specification
@@ -381,8 +380,8 @@ def webhook():
 						})
 
 						# update the current balance for the user
-						current_balance = user_coll.find_one({"user_id":sender_id})["current_balance"]
-						user_coll.update({"user_id":sender_id}, {
+						current_balance = user_coll.find_one({"user_id": sender_id})["current_balance"]
+						user_coll.update({"user_id": sender_id}, {
 							"$set": {
 								"current_balance": current_balance - float(message_text)
 							}
@@ -503,7 +502,6 @@ def webhook():
 					main_balance["text"] = "Your balance is: %s" % user_coll.find_one({"user_id": sender_id})["current_balance"]
 					send_message(sender_id, main_balance)
 					send_message(sender_id, main_carousel)
-
 
 				if messaging_event.get("delivery"):
 					# confirm delivery
