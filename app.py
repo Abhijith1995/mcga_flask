@@ -13,10 +13,9 @@ import psycopg2
 
 app = Flask(__name__)
 
-ec2_ip = '52.205.251.79'
-
+MONGO_URI = "mongodb://foo:bar<d@ds029496.mlab.com:29496/budget"
 # mongo client instantiation
-client = MongoClient(ec2_ip, 27017)
+client = MongoClient(MONGO_URI)
 db = client.budget
 # relevant collections
 user_coll = db.users
