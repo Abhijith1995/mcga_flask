@@ -9,12 +9,12 @@ import requests
 from flask import Flask, jsonify, request
 
 from pymongo import MongoClient
-import psycopg2
 
 app = Flask(__name__)
 
-MONGO_URI = "mongodb://{0}:{1}<d@ds029496.mlab.com:29496/budget".format(os.environ["DB_USERNAME"], os.environ["DB_PASSWORD"])
+MONGO_URI = "mongodb://{0}:{1}@ds029496.mlab.com:29496/budget".format(os.environ["DB_USERNAME"], os.environ["DB_PASSWORD"])
 # mongo client instantiation
+print MONGO_URI
 client = MongoClient(MONGO_URI)
 db = client.budget
 # relevant collections
@@ -78,10 +78,6 @@ def webhook():
 	state_id = state_obj["_id"]
 
 	state_map = state_obj["map"]
-
-	print state_id
-
-	print state_map
 
 	data = request.get_json()
 
@@ -286,6 +282,7 @@ def webhook():
 
 						# onboard user
 						if not state_map["goal_title"]["is_message_sent"]:
+							print "debug onboarding"
 							send_message(sender_id, onboarding_greeting)
 							send_message(sender_id, onboarding_goal_title)
 							state_coll.update({"_id": state_id}, {
