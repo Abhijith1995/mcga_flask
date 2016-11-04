@@ -253,11 +253,6 @@ def handle_message(messaging_event):
 
 			send_message(sender_id, {"text": message})
 
-		elif message_payload == "VIEW_GOAL_PROGRESS":
-			continue
-
-		continue
-
 	if messaging_event.get("message"):
 		# arbitrary message has been received
 		message_text = messaging_event["message"]["text"]
@@ -296,7 +291,7 @@ def handle_message(messaging_event):
 						"map.goal_title.is_message_sent": True
 					}
 				}, upsert=False)
-				continue
+
 			elif goal_coll.find_one({"user_id": sender_id})["goal_title"] is None:
 				goal_coll.update({"user_id": sender_id}, {
 					"$set": {
@@ -311,7 +306,6 @@ def handle_message(messaging_event):
 						"map.goal_desc.is_message_sent": True
 					}
 				}, upsert=False)
-				continue
 
 			elif goal_coll.find_one({"user_id": sender_id})["goal_desc"] is None:
 				goal_coll.update({"user_id": sender_id}, {
@@ -327,7 +321,7 @@ def handle_message(messaging_event):
 						"map.goal_amount.is_message_sent": True
 					}
 				}, upsert=False)
-				continue
+
 			elif goal_coll.find_one({"user_id": sender_id})["goal_amount"] is None:
 				goal_coll.update({"user_id": sender_id}, {
 					"$set": {
@@ -343,7 +337,7 @@ def handle_message(messaging_event):
 						"map.curr_balance.is_message_sent": True
 					}
 				}, upsert=False)
-				continue
+
 			elif user_coll.find_one({"user_id": sender_id})["current_balance"] is None:
 				user_coll.update({"user_id": sender_id}, {
 					"$set": {
@@ -365,8 +359,6 @@ def handle_message(messaging_event):
 
 				send_message(sender_id, {"text": summary})
 				send_message(sender_id, main_quick_reply)
-
-			continue
 
 		if state_map["expense"]["flow_instantiated"]:
 			# presumably last stage of expense specification
@@ -409,8 +401,6 @@ def handle_message(messaging_event):
 			send_message(sender_id, main_balance)
 			send_message(sender_id, main_carousel)
 
-			continue
-
 		if state_map["income"]["flow_instantiated"]:
 
 			subcategory = state_map["income"]["subcategory"]
@@ -444,8 +434,6 @@ def handle_message(messaging_event):
 			send_message(sender_id, income_amount_logged)
 			send_message(sender_id, main_balance)
 			send_message(sender_id, main_carousel)
-
-			continue
 
 		if state_map["goal"]["contribution_flow"]:
 			# amount has been sent back - add to mongo
@@ -487,8 +475,6 @@ def handle_message(messaging_event):
 			send_message(sender_id, main_balance)
 			send_message(sender_id, main_carousel)
 
-			continue
-
 		if messaging_event["message"].get("quick_reply"):
 			message_payload = messaging_event["message"]["quick_reply"]["payload"]
 
@@ -496,11 +482,9 @@ def handle_message(messaging_event):
 				main_balance["text"] = "Your balance is: %s" % user_coll.find_one({"user_id": sender_id})["current_balance"]
 				send_message(sender_id, main_balance)
 				send_message(sender_id, main_carousel)
-				continue
+
 			if message_payload == "SEE_BALANCE_NO":
 				send_message(sender_id, {"text": "Then have a nice day."})
-				continue
-			continue
 
 		main_balance["text"] = "Your balance is: %s" % user_coll.find_one({"user_id": sender_id})["current_balance"]
 		send_message(sender_id, main_balance)
