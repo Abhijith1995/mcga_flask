@@ -290,7 +290,7 @@ def handle_message(messaging_event):
 					"$set": {
 						"map.goal_title.is_message_sent": True
 					}
-				}, upsert=False)
+				})
 
 			elif goal_coll.find_one({"user_id": sender_id})["goal_title"] is None:
 				goal_coll.update({"user_id": sender_id}, {
