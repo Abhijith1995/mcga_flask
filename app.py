@@ -208,7 +208,7 @@ def webhook():
 							"$set": {
 								"map.expense.category": "Living Expenses"
 							}
-						}, upsert=False)herokyuhe
+						}, upsert=False)
 
 						send_message(sender_id, living_expense_categories)
 
