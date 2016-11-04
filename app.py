@@ -14,7 +14,6 @@ app = Flask(__name__)
 
 MONGO_URI = "mongodb://{0}:{1}@ds029496.mlab.com:29496/budget".format(os.environ["DB_USERNAME"], os.environ["DB_PASSWORD"])
 # mongo client instantiation
-print MONGO_URI
 client = MongoClient(MONGO_URI)
 db = client.budget
 # relevant collections
@@ -65,7 +64,7 @@ def verify():
 			return "Verification token mismatch", 403
 		return request.args["hub.challenge"], 200
 
-	return "Hello Abhijith", 200
+	return "Hello World", 200
 
 
 @app.route("/", methods=["POST"])
@@ -80,6 +79,7 @@ def webhook():
 	state_map = state_obj["map"]
 
 	data = request.get_json()
+	print data
 
 	income_amount_prompt = {"text": "How much did you earn today?"}
 	income_amount_logged = {"text": "We have logged your income successfully :)"}
@@ -208,7 +208,7 @@ def webhook():
 							"$set": {
 								"map.expense.category": "Living Expenses"
 							}
-						}, upsert=False)
+						}, upsert=False)herokyuhe
 
 						send_message(sender_id, living_expense_categories)
 
