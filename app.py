@@ -72,14 +72,6 @@ def webhook():
 	# process incoming messaging events
 
 	# retrieve state map from mongo
-	state_obj = state_coll.find_one()
-	state_id, state_map = None, None
-
-	if state_obj is not None:
-		state_id = state_obj["_id"]
-
-		state_map = state_obj["map"]
-
 	data = request.get_json()
 	print data
 
@@ -109,11 +101,17 @@ def webhook():
 		subcategory_map[elem["buttons"][0]["payload"]] = elem["title"]
 
 	if data["object"] == "page":
-
 		for entry in data["entry"]:
 			for messaging_event in entry["messaging"]:
 				sender_id = messaging_event["sender"]["id"]
 				recipient_id = messaging_event["recipient"]["id"]
+				state_obj = state_coll.find_one({"user_id": sender_id})
+				state_id, state_map = None, None
+
+				if state_obj is not None:
+					state_id = state_obj["_id"]
+
+					state_map = state_obj["map"]
 
 				if messaging_event.get("postback"):
 					# user clicked/tapped "postback" button in earlier message
@@ -287,7 +285,7 @@ def webhook():
 							print "debug onboarding"
 							send_message(sender_id, onboarding_greeting)
 							send_message(sender_id, onboarding_goal_title)
-							state_coll.update({"_id": state_id}, {
+							state_coll.insert({"user_id": state_id}, {
 								"$set": {
 									"map.goal_title.is_message_sent": True
 								}
