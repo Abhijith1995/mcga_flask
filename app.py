@@ -103,7 +103,7 @@ def webhook():
 	if data["object"] == "page":
 		for entry in data["entry"]:
 			for messaging_event in entry["messaging"]:
-				handle_message(messaging_event)
+				# handle_message(messaging_event)
 
 	return "ok", 200
 
