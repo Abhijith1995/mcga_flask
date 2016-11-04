@@ -283,7 +283,7 @@ def webhook():
 							})
 
 						# onboard user
-						if not state_map["goal_title"]["is_message_sent"]:
+						if state_map is None or not state_map["goal_title"]["is_message_sent"]:
 							print "debug onboarding"
 							send_message(sender_id, onboarding_greeting)
 							send_message(sender_id, onboarding_goal_title)
