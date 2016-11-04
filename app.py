@@ -73,6 +73,7 @@ def webhook():
 
 	# retrieve state map from mongo
 	state_obj = state_coll.find_one()
+	state_id, state_map = None, None
 
 	if state_obj is not None:
 		state_id = state_obj["_id"]
